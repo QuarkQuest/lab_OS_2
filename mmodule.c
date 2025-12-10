@@ -20,23 +20,21 @@ static ssize_t procfile_read(struct file *filePointer, char __user *buffer,
     char s[32];
     int len;
     time64_t now = ktime_get_real_seconds();
-    time64_t perihelion = 859824000; // 1997-04-01 00:00:00
+    time64_t perihelion = 859824000; // 1997-04-01 00:00:00 UTC комета Хейла-Боппа
     unsigned long days = (now - perihelion) / (60 * 60 * 24);
     
     len = snprintf(s, sizeof(s), "%lu\n", days);
-    
-    if (*offset >= len) {
-        return 0;
-    }
-    
-    if (copy_to_user(buffer, s, len)) {
+    ssize_t ret = len;
+
+    if (*offset >= len || copy_to_user(buffer, s, len)) {
         pr_info("copy_to_user failed\n");
-        return -EFAULT;
+        ret = 0;
     } else {
         pr_info("procfile read %s\n", filePointer->f_path.dentry->d_name.name);
         *offset += len;
     }
-    return len;
+return ret;
+
 }
 
 #ifdef HAVE_PROC_OPS
