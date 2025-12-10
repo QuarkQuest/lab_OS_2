@@ -20,7 +20,7 @@ static ssize_t procfile_read(struct file *filePointer, char __user *buffer,
     char s[32];
     int len;
     time64_t now = ktime_get_real_seconds();
-    time64_t perihelion = 859766400; // 1997-04-01 00:00:00 UTC
+    time64_t perihelion = 859824000; // 1997-04-01 00:00:00
     unsigned long days = (now - perihelion) / (60 * 60 * 24);
     
     len = snprintf(s, sizeof(s), "%lu\n", days);
